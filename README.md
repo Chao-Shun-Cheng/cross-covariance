@@ -12,10 +12,11 @@ S. Matzka and R. Altendorfer, "A comparison of track-to-track fusion algorithms 
 
 |Topic|Type|Objective|
 ------|----|---------
-|`/TODO`|`autoware_msgs::DetectedObjectArray`|Tracking object list from OBU.|
+|`/detection/lidar_detector/objects_filtered`|`autoware_msgs::DetectedObjectArray`|Tracking object list from OBU.|
 |`/TODO`|`autoware_msgs::DetectedObjectArray`|Tracking objects list from lilee RSU.|
 |`/TODO`|`autoware_msgs::DetectedObjectArray`|Tracking objects list from CSIE RSU.|
 |`/TODO`|`autoware_msgs::DetectedObjectArray`|Tracking objects list from wistron RSU.|
+|`/simulator/ground_truth/objects`|`autoware_msgs::DetectedObjectArray`|Tracking objects list from LGSVL.|
 
 ### Published topics
 

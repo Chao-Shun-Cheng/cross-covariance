@@ -11,10 +11,6 @@
 
 using namespace std;
 
-#define DISTANCE_THRESHOLD \
-    1  // meters, if distance between two objects is less than this threshold
-#define BETA 0.4
-
 class cross_covariance
 {
 public:

@@ -1,0 +1,9 @@
+<!-- -->
+<launch>
+  <arg name="DISTANCE_THRESHOLD" default="1"/> <!-- meters, if distance between two objects is less than this threshold -->
+  <arg name="BETA" default="0.4"/>
+  <node pkg="cross_covariance" type="cross_covariance" name="cross_cov" output="screen">
+    <param name="DISTANCE_THRESHOLD" value="$(arg DISTANCE_THRESHOLD)" />
+    <param name="BETA" value="$(arg BETA)" />
+  </node>
+</launch>
