@@ -2,8 +2,23 @@
 <launch>
   <arg name="DISTANCE_THRESHOLD" default="1"/> <!-- meters, if distance between two objects is less than this threshold -->
   <arg name="BETA" default="0.4"/>
-  <node pkg="cross_covariance" type="cross_covariance" name="cross_cov" output="screen">
+  <arg name="OBU_topic_name" default="/detection/object_tracker/objects" />
+  <arg name="RSU_topic_name_1" default="/simulator/tracker/objects" />
+  <arg name="RSU_topic_name_2" default="/lileeRSU/s0/objects" />
+  <arg name="pub_topic_name" default="/cross_cov/tracker/objects" />
+
+  <node pkg="cross_covariance" type="cross_cov" name="cross_cov" output="screen">
     <param name="DISTANCE_THRESHOLD" value="$(arg DISTANCE_THRESHOLD)" />
     <param name="BETA" value="$(arg BETA)" />
+    <param name="OBU_topic_name" value="$(arg OBU_topic_name)" />
+    <param name="RSU_topic_name_1" value="$(arg RSU_topic_name_1)" />
+    <param name="RSU_topic_name_2" value="$(arg RSU_topic_name_2)" />
+    <param name="pub_topic_name" value="$(arg pub_topic_name)" />
+  </node>
+
+  <node pkg="detected_objects_visualizer" type="visualize_detected_objects" name="cross_cov_visualization"
+          output="screen" ns="/cross_cov/tracker">
+      <param name="objects_src_topic" value="/objects"/>
+      <rosparam param="box_color">[0.,153.,0.,0.8]</rosparam>
   </node>
 </launch>

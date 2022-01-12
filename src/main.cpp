@@ -5,6 +5,11 @@ bool OBU = false, lilee = false, wistron = false;
 autoware_msgs::DetectedObjectArray OBU_objects, lilee_objects, wistron_objects;
 double DISTANCE_THRESHOLD_;
 float BETA_;
+string OBU_topic_name_;
+string RSU_topic_name_1_;
+string RSU_topic_name_2_;
+string pub_topic_name_;
+
 
 void OBU_callback(const autoware_msgs::DetectedObjectArray &input)
 {
@@ -40,8 +45,7 @@ void data_association(autoware_msgs::DetectedObjectArray &result, autoware_msgs:
         float x = data.objects[i].pose.position.x;
         float y = data.objects[i].pose.position.y;
         for (int j = 0; j < result.objects.size(); j++) {
-            double distance =
-                pow((x - result.objects[i].pose.position.x), 2) + pow((y - result.objects[i].pose.position.y), 2);
+            double distance = pow((x - result.objects[i].pose.position.x), 2) + pow((y - result.objects[i].pose.position.y), 2);
             if (min > distance && distance < DISTANCE_THRESHOLD_) {
                 close = true;
                 min_index = j;
@@ -73,13 +77,20 @@ void data_association(autoware_msgs::DetectedObjectArray &result, autoware_msgs:
 int main(int argc, char **argv)
 {
     ros::init(argc, argv, "cross_covariance");
+
+    ros::NodeHandle private_nh_("~");
+    private_nh_.param<double>("DISTANCE_THRESHOLD", DISTANCE_THRESHOLD_, 3);
+    private_nh_.param<float>("BETA", BETA_, 0.4);
+    private_nh_.param<string>("OBU_topic_name", OBU_topic_name_, "/");
+    private_nh_.param<string>("RSU_topic_name_1", RSU_topic_name_1_, "/");
+    private_nh_.param<string>("RSU_topic_name_2", RSU_topic_name_2_, "/");
+    private_nh_.param<string>("pub_topic_name", pub_topic_name_, "/");
+
     ros::NodeHandle n;
-    n.getParam("DISTANCE_THRESHOLD", DISTANCE_THRESHOLD_);
-    n.getParam("BETA", BETA_);
-    ros::Publisher pub = n.advertise<autoware_msgs::DetectedObjectArray>("t2t_fusion/cross_cov/objects", 1);
-    ros::Subscriber sub1 = n.subscribe("/detection/lidar_detector/objects_filtered", 1, OBU_callback);
-    ros::Subscriber sub2 = n.subscribe("/simulator/ground_truth/objects", 1, lileeRSU_callback);
-    ros::Subscriber sub3 = n.subscribe("/detection/fusion_tools/objects", 1, wistronRSU_callback);
+    ros::Publisher pub = n.advertise<autoware_msgs::DetectedObjectArray>(pub_topic_name_, 1);
+    ros::Subscriber sub1 = n.subscribe(OBU_topic_name_, 1, OBU_callback);
+    ros::Subscriber sub2 = n.subscribe(RSU_topic_name_1_, 1, lileeRSU_callback);
+    ros::Subscriber sub3 = n.subscribe(RSU_topic_name_2_, 1, wistronRSU_callback);
     ros::Rate loop_rate(10);
 
     while (ros::ok()) {
@@ -98,6 +109,5 @@ int main(int argc, char **argv)
         wistron_objects.objects.clear();
         loop_rate.sleep();
     }
-
     return 0;
 }
