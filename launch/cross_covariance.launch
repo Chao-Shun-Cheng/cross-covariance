@@ -1,19 +1,37 @@
 <!-- -->
 <launch>
-  <arg name="DISTANCE_THRESHOLD" default="1"/> <!-- meters, if distance between two objects is less than this threshold -->
-  <arg name="BETA" default="0.4"/>
-  <arg name="OBU_topic_name" default="/detection/object_tracker/objects" />
-  <arg name="RSU_topic_name_1" default="/simulator/tracker/objects" />
-  <arg name="RSU_topic_name_2" default="/lileeRSU/s0/objects" />
+  <arg name="DISTANCE_THRESHOLD" default="0.8"/> <!-- meters, if distance between two objects is bigger than this, there is not association -->
+  <arg name="BETA" default="0.5"/>
+  <arg name="OBU_topic_name" default="/rsu/tracker/objects" />
+  <arg name="RSU_topic_name" default="/obu/tracker/objects" />
   <arg name="pub_topic_name" default="/cross_cov/tracker/objects" />
+  <arg name="groundTruth_topic_name" default="/lgsvl/ground_truth/objects" />
+
+  <arg name="output_result" default="false"/>
+  <arg name="logfile_name" default="cross_lat50_noi1000_std03_cv09_ctrv09.csv" />
+  <arg name="save_path" default="/home/kenny/Documents/Bag/lgsvl/experiment_rsu_obu_cross/" />
+
+  <arg name="weight_d" default="1" />   <!-- weight_d is used for distance -->
+  <arg name="weight_v" default="1" />   <!-- weight_v is used for velocity -->
+  <arg name="weight_h" default="1" />   <!-- weight_h is used for heading -->
+  <arg name="weight_l" default="1" />   <!-- weight_l is used for label -->
 
   <node pkg="cross_covariance" type="cross_cov" name="cross_cov" output="screen">
     <param name="DISTANCE_THRESHOLD" value="$(arg DISTANCE_THRESHOLD)" />
     <param name="BETA" value="$(arg BETA)" />
     <param name="OBU_topic_name" value="$(arg OBU_topic_name)" />
-    <param name="RSU_topic_name_1" value="$(arg RSU_topic_name_1)" />
-    <param name="RSU_topic_name_2" value="$(arg RSU_topic_name_2)" />
+    <param name="RSU_topic_name" value="$(arg RSU_topic_name)" />
     <param name="pub_topic_name" value="$(arg pub_topic_name)" />
+    <param name="groundTruth_topic_name" value="$(arg groundTruth_topic_name)" />
+
+    <param name="output_result" value="$(arg output_result)" />
+    <param name="logfile_name" value="$(arg logfile_name)" />
+    <param name="save_path" value="$(arg save_path)" />
+
+    <param name="weight_d" value="$(arg weight_d)" />
+    <param name="weight_v" value="$(arg weight_v)" />
+    <param name="weight_h" value="$(arg weight_h)" />
+    <param name="weight_l" value="$(arg weight_l)" />
   </node>
 
   <node pkg="detected_objects_visualizer" type="visualize_detected_objects" name="cross_cov_visualization"
